@@ -226,3 +226,15 @@ Content-Type: application/json
 
 ### Schritt 10: DELETE - PlannedMeal entfernen
 DELETE http://localhost:8080/api/planned-meals/{{plannedMealId}}
+
+### Zufälliges Rezept aus TheMealDB
+GET http://localhost:8080/api/mealdb/random
+
+### Spezifisches Rezept (id 52772 = Teriyaki Chicken Casserole)
+GET http://localhost:8080/api/mealdb/52772
+
+### Suche
+GET http://localhost:8080/api/mealdb?q=chicken
+
+### Nicht-existente ID
+GET http://localhost:8080/api/mealdb/00000
