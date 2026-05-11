@@ -1,0 +1,53 @@
+### GET - alle Rezepte (am Anfang leer)
+GET http://localhost:8080/api/recipes
+
+### POST - neues Rezept anlegen
+POST http://localhost:8080/api/recipes
+Content-Type: application/json
+
+{
+  "title": "Chicken & Rice",
+  "category": "Chicken",
+  "area": "American",
+  "instructions": "Reis kochen. Hähnchenbrust anbraten. Servieren.",
+  "caloriesPerServing": 450,
+  "proteinG": 35,
+  "carbsG": 55,
+  "fatG": 8
+}
+
+### GET - ein Rezept per ID
+GET http://localhost:8080/api/recipes/1
+
+### GET - nicht-existente ID (sollte 404 geben)
+GET http://localhost:8080/api/recipes/9999
+
+### PUT - Rezept aktualisieren
+PUT http://localhost:8080/api/recipes/1
+Content-Type: application/json
+
+{
+  "title": "Chicken & Rice (Updated)",
+  "category": "Chicken",
+  "area": "American",
+  "instructions": "Reis kochen. Hähnchenbrust marinieren, dann anbraten.",
+  "caloriesPerServing": 470,
+  "proteinG": 40,
+  "carbsG": 55,
+  "fatG": 10
+}
+
+### POST - Validierungsfehler (Titel fehlt → 400)
+POST http://localhost:8080/api/recipes
+Content-Type: application/json
+
+{
+  "category": "Beef",
+  "caloriesPerServing": 500
+}
+
+### DELETE - Rezept löschen
+DELETE http://localhost:8080/api/recipes/1
+
+### DELETE - bereits gelöscht (sollte 404 geben)
+DELETE http://localhost:8080/api/recipes/1
