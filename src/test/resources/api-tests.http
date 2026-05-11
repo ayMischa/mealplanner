@@ -129,3 +129,100 @@ GET http://localhost:8080/api/meal-plans?goal=INVALID
 
 ### DELETE
 DELETE http://localhost:8080/api/meal-plans/1
+
+###
+### --- PlannedMeal Endpoints (mit verketteten Tests) ---
+###
+
+### Schritt 1: Recipe anlegen, ID merken
+POST http://localhost:8080/api/recipes
+Content-Type: application/json
+
+{
+  "title": "Test Chicken & Rice",
+  "category": "Chicken",
+  "instructions": "Reis kochen, Hähnchen anbraten.",
+  "caloriesPerServing": 450,
+  "proteinG": 35,
+  "carbsG": 55,
+  "fatG": 8
+}
+
+> {%
+    client.global.set("recipeId", response.body.id);
+%}
+
+### Schritt 2: MealPlan anlegen, ID merken
+POST http://localhost:8080/api/meal-plans
+Content-Type: application/json
+
+{
+  "name": "Test Cut Plan",
+  "description": "Tests",
+  "goal": "CUT",
+  "startDate": "2025-11-01",
+  "endDate": "2025-11-30"
+}
+
+> {%
+    client.global.set("mealPlanId", response.body.id);
+%}
+
+### Schritt 3: PlannedMeal anlegen, die beide referenziert
+POST http://localhost:8080/api/planned-meals
+Content-Type: application/json
+
+{
+  "date": "2025-11-05",
+  "mealType": "LUNCH",
+  "mealPlanId": {{mealPlanId}},
+  "recipeId": {{recipeId}}
+}
+
+> {%
+    client.global.set("plannedMealId", response.body.id);
+%}
+
+### Schritt 4: GET - alle Mahlzeiten anzeigen (sieh die nested Response!)
+GET http://localhost:8080/api/planned-meals
+
+### Schritt 5: GET - nur Mahlzeiten dieses Plans
+GET http://localhost:8080/api/planned-meals?mealPlanId={{mealPlanId}}
+
+### Schritt 6: GET - nur Mahlzeiten am 5.11. dieses Plans
+GET http://localhost:8080/api/planned-meals?mealPlanId={{mealPlanId}}&date=2025-11-05
+
+### Schritt 7: PUT - Mahlzeit von LUNCH auf DINNER ändern
+PUT http://localhost:8080/api/planned-meals/{{plannedMealId}}
+Content-Type: application/json
+
+{
+  "date": "2025-11-05",
+  "mealType": "DINNER",
+  "mealPlanId": {{mealPlanId}},
+  "recipeId": {{recipeId}}
+}
+
+### Schritt 8: POST mit ungültiger mealPlanId (sollte 400 geben)
+POST http://localhost:8080/api/planned-meals
+Content-Type: application/json
+
+{
+  "date": "2025-11-05",
+  "mealType": "BREAKFAST",
+  "mealPlanId": 99999,
+  "recipeId": {{recipeId}}
+}
+
+### Schritt 9: POST mit fehlender mealType (Validierung → 400)
+POST http://localhost:8080/api/planned-meals
+Content-Type: application/json
+
+{
+  "date": "2025-11-05",
+  "mealPlanId": {{mealPlanId}},
+  "recipeId": {{recipeId}}
+}
+
+### Schritt 10: DELETE - PlannedMeal entfernen
+DELETE http://localhost:8080/api/planned-meals/{{plannedMealId}}
