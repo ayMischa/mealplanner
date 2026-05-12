@@ -53,6 +53,15 @@ public class RecipeController {
                 .body(response);
     }
 
+    @PostMapping("/from-mealdb/{mealDbId}")
+    public ResponseEntity<RecipeResponse> importFromMealDb(@PathVariable String mealDbId) {
+        Recipe imported = service.importFromMealDb(mealDbId);
+        RecipeResponse response = RecipeMapper.toResponse(imported);
+        return ResponseEntity
+                .created(URI.create("/api/recipes/" + imported.getId()))
+                .body(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<RecipeResponse> update(
             @PathVariable Long id,

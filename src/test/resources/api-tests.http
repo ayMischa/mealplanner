@@ -238,3 +238,26 @@ GET http://localhost:8080/api/mealdb?q=chicken
 
 ### Nicht-existente ID
 GET http://localhost:8080/api/mealdb/00000
+
+###
+### --- Import von TheMealDB ---
+###
+
+### Erster Import: Teriyaki Chicken Casserole (id 52772)
+POST http://localhost:8080/api/recipes/from-mealdb/52772
+
+> {%
+    client.global.set("importedRecipeId", response.body.id);
+%}
+
+### Zweiter Import derselben ID (idempotent: gibt dasselbe Recipe zurück)
+POST http://localhost:8080/api/recipes/from-mealdb/52772
+
+### GET - jetzt liegt es in deiner eigenen DB
+GET http://localhost:8080/api/recipes/{{importedRecipeId}}
+
+### GET - alle Recipes (zeigt das importierte)
+GET http://localhost:8080/api/recipes
+
+### Import mit ungültiger ID (sollte 404 geben)
+POST http://localhost:8080/api/recipes/from-mealdb/00000

@@ -1,8 +1,13 @@
 package de.dhbw.webeng.mealplanner.service;
 
+import de.dhbw.webeng.mealplanner.external.MealDbApiClient;
+import de.dhbw.webeng.mealplanner.external.dto.MealDbMeal;
+import de.dhbw.webeng.mealplanner.mapper.RecipeMapper;
 import de.dhbw.webeng.mealplanner.model.Recipe;
 import de.dhbw.webeng.mealplanner.repository.RecipeRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +16,11 @@ import java.util.Optional;
 public class RecipeService {
 
     private final RecipeRepository repository;
+    private final MealDbApiClient mealDbApiClient;
 
-    public RecipeService(RecipeRepository repository) {
+    public RecipeService(RecipeRepository repository, MealDbApiClient mealDbApiClient) {
         this.repository = repository;
+        this.mealDbApiClient = mealDbApiClient;
     }
 
     public List<Recipe> findAll() {
@@ -47,5 +54,17 @@ public class RecipeService {
         }
         repository.deleteById(id);
         return true;
+    }
+
+    public Recipe importFromMealDb(String mealDbId) {
+        return repository.findByMealDbId(mealDbId)
+                .orElseGet(() -> {
+                    MealDbMeal external = mealDbApiClient.findById(mealDbId)
+                            .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.NOT_FOUND,
+                                    "Recipe with TheMealDB id " + mealDbId + " not found"));
+                    Recipe recipe = RecipeMapper.fromMealDb(external);
+                    return repository.save(recipe);
+                });
     }
 }
