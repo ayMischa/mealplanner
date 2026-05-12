@@ -56,15 +56,15 @@ public class PlannedMealService {
     }
 
     public Optional<PlannedMeal> update(Long id, PlannedMeal updated, Long mealPlanId, Long recipeId) {
-        if (!repository.existsById(id)) {
-            return Optional.empty();
-        }
-        MealPlan plan = loadMealPlan(mealPlanId);
-        Recipe recipe = loadRecipe(recipeId);
-        updated.setId(id);
-        updated.setMealPlan(plan);
-        updated.setRecipe(recipe);
-        return Optional.of(repository.save(updated));
+        return repository.findById(id).map(existing -> {
+            MealPlan plan = loadMealPlan(mealPlanId);
+            Recipe recipe = loadRecipe(recipeId);
+            existing.setDate(updated.getDate());
+            existing.setMealType(updated.getMealType());
+            existing.setMealPlan(plan);
+            existing.setRecipe(recipe);
+            return repository.save(existing);
+        });
     }
 
     public boolean deleteById(Long id) {

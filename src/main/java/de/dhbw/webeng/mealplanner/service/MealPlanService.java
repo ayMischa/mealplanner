@@ -35,11 +35,14 @@ public class MealPlanService {
     }
 
     public Optional<MealPlan> update(Long id, MealPlan updated) {
-        if (!repository.existsById(id)) {
-            return Optional.empty();
-        }
-        updated.setId(id);
-        return Optional.of(repository.save(updated));
+        return repository.findById(id).map(existing -> {
+            existing.setName(updated.getName());
+            existing.setDescription(updated.getDescription());
+            existing.setGoal(updated.getGoal());
+            existing.setStartDate(updated.getStartDate());
+            existing.setEndDate(updated.getEndDate());
+            return repository.save(existing);
+        });
     }
 
     public boolean deleteById(Long id) {

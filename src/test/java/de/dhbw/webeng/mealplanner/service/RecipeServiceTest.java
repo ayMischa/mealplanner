@@ -105,4 +105,36 @@ class RecipeServiceTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("00000");
     }
+
+    @Test
+    void update_whenExists_modifiesAndReturnsUpdated() {
+        Recipe existing = new Recipe();
+        existing.setId(1L);
+        existing.setTitle("Old Title");
+        existing.setCategory("Old Category");
+
+        Recipe updated = new Recipe();
+        updated.setTitle("New Title");
+        updated.setCategory("New Category");
+
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.save(any(Recipe.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Optional<Recipe> result = service.update(1L, updated);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getTitle()).isEqualTo("New Title");
+        assertThat(result.get().getCategory()).isEqualTo("New Category");
+        assertThat(result.get().getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void update_whenNotExists_returnsEmpty() {
+        when(repository.findById(999L)).thenReturn(Optional.empty());
+
+        Optional<Recipe> result = service.update(999L, new Recipe());
+
+        assertThat(result).isEmpty();
+        verify(repository, never()).save(any());
+    }
 }

@@ -41,11 +41,19 @@ public class RecipeService {
     }
 
     public Optional<Recipe> update(Long id, Recipe updated) {
-        if (!repository.existsById(id)) {
-            return Optional.empty();
-        }
-        updated.setId(id);
-        return Optional.of(repository.save(updated));
+        return repository.findById(id).map(existing -> {
+            existing.setTitle(updated.getTitle());
+            existing.setCategory(updated.getCategory());
+            existing.setArea(updated.getArea());
+            existing.setImageUrl(updated.getImageUrl());
+            existing.setInstructions(updated.getInstructions());
+            existing.setMealDbId(updated.getMealDbId());
+            existing.setCaloriesPerServing(updated.getCaloriesPerServing());
+            existing.setProteinG(updated.getProteinG());
+            existing.setCarbsG(updated.getCarbsG());
+            existing.setFatG(updated.getFatG());
+            return repository.save(existing);
+        });
     }
 
     public boolean deleteById(Long id) {
