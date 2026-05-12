@@ -2,6 +2,7 @@ package de.dhbw.webeng.mealplanner.mapper;
 
 import de.dhbw.webeng.mealplanner.dto.RecipeRequest;
 import de.dhbw.webeng.mealplanner.dto.RecipeResponse;
+import de.dhbw.webeng.mealplanner.external.dto.MealDbMeal;
 import de.dhbw.webeng.mealplanner.model.Recipe;
 
 public final class RecipeMapper {
@@ -38,5 +39,16 @@ public final class RecipeMapper {
                 recipe.getCarbsG(),
                 recipe.getFatG()
         );
+    }
+    public static Recipe fromMealDb(MealDbMeal external) {
+        Recipe recipe = new Recipe();
+        recipe.setTitle(external.strMeal());
+        recipe.setCategory(external.strCategory());
+        recipe.setArea(external.strArea());
+        recipe.setInstructions(external.strInstructions());
+        recipe.setImageUrl(external.strMealThumb());
+        recipe.setMealDbId(external.idMeal());
+        // calories/macros bleiben null, diese Daten gibt es in der API nicht
+        return recipe;
     }
 }
