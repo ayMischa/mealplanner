@@ -1,11 +1,13 @@
+import RecipeList from './components/RecipeList';
+
 function App() {
-  return (
-      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-        <h1>Mealplanner</h1>
-        <p>Willkommen in deinem Mealplanner.</p>
-        <p>Frontend läuft auf Port 5173, Backend auf 8080.</p>
-      </div>
-  );
+    return (
+        <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
+            <h1>Mealplanner</h1>
+            <h2>Rezepte</h2>
+            <RecipeList />
+        </div>
+    );
 }
 
 export default App;

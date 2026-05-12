@@ -261,3 +261,9 @@ GET http://localhost:8080/api/recipes
 
 ### Import mit ungültiger ID (sollte 404 geben)
 POST http://localhost:8080/api/recipes/from-mealdb/00000
+###
+POST http://localhost:8080/api/recipes/from-mealdb/52772
+###
+POST http://localhost:8080/api/recipes/from-mealdb/52771
+###
+POST http://localhost:8080/api/recipes/from-mealdb/52774
