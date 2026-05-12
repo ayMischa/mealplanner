@@ -34,3 +34,6 @@ build/
 
 # H2 Database files
 /data/
+
+# Vite cache
+.vite/
