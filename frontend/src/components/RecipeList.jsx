@@ -69,7 +69,27 @@ function RecipeList() {
 
     return (
         <div>
-            <h2>Rezepte</h2>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '1rem'
+            }}>
+                <h2 style={{ margin: 0 }}>Rezepte</h2>
+                <Link
+                    to="/recipes/new"
+                    style={{
+                        padding: '0.5rem 1rem',
+                        background: '#2563eb',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderRadius: '6px',
+                        fontSize: '0.9rem'
+                    }}
+                >
+                    + Neues Rezept
+                </Link>
+            </div>
             {content}
         </div>
     );
