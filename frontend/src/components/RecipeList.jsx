@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function RecipeList() {
     const [recipes, setRecipes] = useState([]);
@@ -23,45 +24,54 @@ function RecipeList() {
         fetchRecipes();
     }, []);
 
+    let content;
     if (loading) {
-        return <p>Lädt Rezepte...</p>;
-    }
-
-    if (error) {
-        return <p style={{ color: 'crimson' }}>Fehler beim Laden: {error}</p>;
-    }
-
-    if (recipes.length === 0) {
-        return <p>Noch keine Rezepte. Importiere eines aus TheMealDB oder lege eins per API an.</p>;
+        content = <p>Lädt Rezepte...</p>;
+    } else if (error) {
+        content = <p style={{ color: 'crimson' }}>Fehler beim Laden: {error}</p>;
+    } else if (recipes.length === 0) {
+        content = <p>Noch keine Rezepte. Importiere eines aus TheMealDB.</p>;
+    } else {
+        content = (
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+                {recipes.map(recipe => (
+                    <li
+                        key={recipe.id}
+                        style={{
+                            border: '1px solid #ddd',
+                            borderRadius: '8px',
+                            padding: '1rem',
+                            marginBottom: '0.75rem'
+                        }}
+                    >
+                        <Link
+                            to={`/recipes/${recipe.id}`}
+                            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                        >
+                            <h3 style={{ margin: '0 0 0.5rem 0' }}>{recipe.title}</h3>
+                            <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                                {recipe.category && <span>{recipe.category}</span>}
+                                {recipe.category && recipe.area && <span> · </span>}
+                                {recipe.area && <span>{recipe.area}</span>}
+                            </div>
+                            {recipe.caloriesPerServing && (
+                                <div style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                                    {recipe.caloriesPerServing} kcal
+                                    {recipe.proteinG && ` · ${recipe.proteinG}g Protein`}
+                                </div>
+                            )}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        );
     }
 
     return (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-            {recipes.map(recipe => (
-                <li
-                    key={recipe.id}
-                    style={{
-                        border: '1px solid #ddd',
-                        borderRadius: '8px',
-                        padding: '1rem',
-                        marginBottom: '0.75rem'
-                    }}
-                >
-                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{recipe.title}</h3>
-                    <div style={{ color: '#666', fontSize: '0.9rem' }}>
-                        {recipe.category && <span>{recipe.category}</span>}
-                        {recipe.category && recipe.area && <span> · </span>}
-                        {recipe.area && <span>{recipe.area}</span>}
-                    </div>
-                    {recipe.caloriesPerServing && (
-                        <div style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                            {recipe.caloriesPerServing} kcal
-                            {recipe.proteinG && ` · ${recipe.proteinG}g Protein`}
-                        </div>
-                    )}
-                </li>
-            ))}
-        </ul>
+        <div>
+            <h2>Rezepte</h2>
+            {content}
+        </div>
     );
 }
 
