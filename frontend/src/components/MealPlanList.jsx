@@ -22,6 +22,22 @@ function MealPlanList() {
         fetchPlans();
     }, []);
 
+    async function handleDelete(id) {
+        if (!confirm('Plan wirklich löschen?')) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/meal-plans/${id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok && response.status !== 404) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            setPlans(plans.filter(p => p.id !== id));
+        } catch (err) {
+            alert('Fehler beim Löschen: ' + err.message);
+        }
+    }
+
     let content;
     if (loading) {
         content = <p>Lädt Pläne...</p>;
@@ -39,21 +55,42 @@ function MealPlanList() {
                             border: '1px solid #ddd',
                             borderRadius: '8px',
                             padding: '1rem',
-                            marginBottom: '0.75rem'
+                            marginBottom: '0.75rem',
+                            position: 'relative'
                         }}
                     >
-                        <h3 style={{ margin: '0 0 0.5rem 0' }}>{plan.name}</h3>
-                        <div style={{ color: '#666', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
-                            Ziel: <strong>{plan.goal}</strong>
-                        </div>
-                        <div style={{ color: '#666', fontSize: '0.9rem' }}>
-                            {plan.startDate} – {plan.endDate}
-                        </div>
-                        {plan.description && (
-                            <div style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                                {plan.description}
+                        <button
+                            onClick={() => handleDelete(plan.id)}
+                            aria-label="Löschen"
+                            style={{
+                                position: 'absolute',
+                                top: '0.5rem',
+                                right: '0.5rem',
+                                background: 'transparent',
+                                border: 'none',
+                                fontSize: '1.25rem',
+                                color: '#999',
+                                cursor: 'pointer',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '4px'
+                            }}
+                        >
+                            ✕
+                        </button>
+                        <div style={{ paddingRight: '2rem' }}>
+                            <h3 style={{ margin: '0 0 0.5rem 0' }}>{plan.name}</h3>
+                            <div style={{ color: '#666', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
+                                Ziel: <strong>{plan.goal}</strong>
                             </div>
-                        )}
+                            <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                                {plan.startDate} – {plan.endDate}
+                            </div>
+                            {plan.description && (
+                                <div style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                                    {plan.description}
+                                </div>
+                            )}
+                        </div>
                     </li>
                 ))}
             </ul>

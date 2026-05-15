@@ -24,6 +24,22 @@ function RecipeList() {
         fetchRecipes();
     }, []);
 
+    async function handleDelete(id) {
+        if (!confirm('Rezept wirklich löschen?')) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/recipes/${id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok && response.status !== 404) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            setRecipes(recipes.filter(r => r.id !== id));
+        } catch (err) {
+            alert('Fehler beim Löschen: ' + err.message);
+        }
+    }
+
     let content;
     if (loading) {
         content = <p>Lädt Rezepte...</p>;
@@ -41,12 +57,31 @@ function RecipeList() {
                             border: '1px solid #ddd',
                             borderRadius: '8px',
                             padding: '1rem',
-                            marginBottom: '0.75rem'
+                            marginBottom: '0.75rem',
+                            position: 'relative'
                         }}
                     >
+                        <button
+                            onClick={() => handleDelete(recipe.id)}
+                            aria-label="Löschen"
+                            style={{
+                                position: 'absolute',
+                                top: '0.5rem',
+                                right: '0.5rem',
+                                background: 'transparent',
+                                border: 'none',
+                                fontSize: '1.25rem',
+                                color: '#999',
+                                cursor: 'pointer',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '4px'
+                            }}
+                        >
+                            ✕
+                        </button>
                         <Link
                             to={`/recipes/${recipe.id}`}
-                            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                            style={{ textDecoration: 'none', color: 'inherit', display: 'block', paddingRight: '2rem' }}
                         >
                             <h3 style={{ margin: '0 0 0.5rem 0' }}>{recipe.title}</h3>
                             <div style={{ color: '#666', fontSize: '0.9rem' }}>

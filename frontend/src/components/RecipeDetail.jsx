@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 function RecipeDetail() {
     const { id } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchRecipe() {
@@ -44,6 +45,22 @@ function RecipeDetail() {
                 <Link to="/">← Zurück zur Liste</Link>
             </div>
         );
+    }
+
+    async function handleDelete() {
+        if (!confirm('Rezept wirklich löschen?')) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/recipes/${id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok && response.status !== 404) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            navigate('/');
+        } catch (err) {
+            alert('Fehler beim Löschen: ' + err.message);
+        }
     }
 
     return (
@@ -91,6 +108,21 @@ function RecipeDetail() {
                     <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{recipe.instructions}</p>
                 </div>
             )}
+
+            <button
+                onClick={handleDelete}
+                style={{
+                    marginTop: '2rem',
+                    padding: '0.5rem 1rem',
+                    background: 'transparent',
+                    color: 'crimson',
+                    border: '1px solid crimson',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                }}
+            >
+                Rezept löschen
+            </button>
         </div>
     );
 }
