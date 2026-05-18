@@ -5,6 +5,7 @@ import RecipeForm from './components/RecipeForm';
 import MealPlanList from './components/MealPlanList';
 import MealPlanForm from './components/MealPlanForm';
 import MealPlanDetail from './components/MealPlanDetail';
+import MealDbBrowse from './components/MealDbBrowse';
 
 function App() {
     const navLinkStyle = ({ isActive }) => ({
@@ -24,6 +25,7 @@ function App() {
                     <nav style={{ display: 'flex', gap: '0.5rem' }}>
                         <NavLink to="/" style={navLinkStyle} end>Rezepte</NavLink>
                         <NavLink to="/meal-plans" style={navLinkStyle}>Pläne</NavLink>
+                        <NavLink to="/mealdb" style={navLinkStyle}>MealDB</NavLink>
                     </nav>
                 </header>
 
@@ -36,6 +38,7 @@ function App() {
                     <Route path="/recipes/:id" element={<RecipeDetail />} />
                     <Route path="/meal-plans" element={<MealPlanList />} />
                     <Route path="/meal-plans/new" element={<MealPlanForm />} />
+                    <Route path="/mealdb" element={<MealDbBrowse />} />
                 </Routes>
             </div>
         </BrowserRouter>
