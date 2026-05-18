@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+
 function MealPlanList() {
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -77,7 +78,10 @@ function MealPlanList() {
                         >
                             ✕
                         </button>
-                        <div style={{ paddingRight: '2rem' }}>
+                        <Link
+                            to={`/meal-plans/${plan.id}`}
+                            style={{ textDecoration: 'none', color: 'inherit', display: 'block', paddingRight: '2rem' }}
+                        >
                             <h3 style={{ margin: '0 0 0.5rem 0' }}>{plan.name}</h3>
                             <div style={{ color: '#666', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
                                 Ziel: <strong>{plan.goal}</strong>
@@ -90,7 +94,7 @@ function MealPlanList() {
                                     {plan.description}
                                 </div>
                             )}
-                        </div>
+                        </Link>
                     </li>
                 ))}
             </ul>
