@@ -13,7 +13,7 @@ Entwickelt als Prüfungsleistung im Modul T4INF4212 (Web-Engineering II) an der 
 - **Eingabevalidierung** mit Bean Validation, sinnvolle HTTP-Statuscodes auf allen Endpoints
 - **Drei Testarten**: Unit-Tests (Mockito), Repository-Integration (@DataJpaTest), Controller-Integration (@WebMvcTest mit MockMvc)
 
-## Architektur
+## Architektur (AI-Generated)
 
 ```mermaid
 graph LR
@@ -178,7 +178,7 @@ mealplanner/
 └── pom.xml
 ```
 
-## Datenmodell
+## Datenmodell (AI-Generated)
 
 ```mermaid
 erDiagram
