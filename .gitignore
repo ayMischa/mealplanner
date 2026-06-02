@@ -37,3 +37,8 @@ build/
 
 # Vite cache
 .vite/
+
+# Environment variables (real values)
+.env
+.env.local
+.env.*.local
