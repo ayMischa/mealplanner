@@ -267,3 +267,15 @@ POST http://localhost:8080/api/recipes/from-mealdb/52772
 POST http://localhost:8080/api/recipes/from-mealdb/52771
 ###
 POST http://localhost:8080/api/recipes/from-mealdb/52774
+
+### 404 mit ProblemDetail
+GET http://localhost:8080/api/recipes/99999
+
+### Validierungsfehler mit fieldErrors (leerer Titel)
+POST http://localhost:8080/api/recipes
+Content-Type: application/json
+
+{
+  "title": "",
+  "caloriesPerServing": -5
+}
