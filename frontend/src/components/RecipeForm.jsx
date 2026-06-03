@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { createRecipe } from '../api';
 
 function RecipeForm() {
     const navigate = useNavigate();
@@ -38,22 +39,12 @@ function RecipeForm() {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/recipes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                if (response.status === 400) {
-                    throw new Error('Bitte Eingaben prüfen (z.B. Titel fehlt oder negativer Wert)');
-                }
-                throw new Error(`HTTP ${response.status}`);
-            }
-
+            await createRecipe(payload);
             navigate('/');
         } catch (err) {
-            setError(err.message);
+            setError(err.message.includes('400')
+                ? 'Bitte Eingaben prüfen (z.B. Titel fehlt oder negativer Wert)'
+                : err.message);
         } finally {
             setSubmitting(false);
         }

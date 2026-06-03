@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getRecipe, deleteRecipe } from '../api';
 
 function RecipeDetail() {
     const { id } = useParams();
@@ -9,24 +10,17 @@ function RecipeDetail() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function fetchRecipe() {
+        async function load() {
             try {
-                const response = await fetch(`http://localhost:8080/api/recipes/${id}`);
-                if (response.status === 404) {
-                    throw new Error('Rezept nicht gefunden');
-                }
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                const data = await response.json();
+                const data = await getRecipe(id);
                 setRecipe(data);
             } catch (err) {
-                setError(err.message);
+                setError(err.message.includes('404') ? 'Rezept nicht gefunden' : err.message);
             } finally {
                 setLoading(false);
             }
         }
-        fetchRecipe();
+        load();
     }, [id]);
 
     if (loading) {
@@ -49,14 +43,8 @@ function RecipeDetail() {
 
     async function handleDelete() {
         if (!confirm('Rezept wirklich löschen?')) return;
-
         try {
-            const response = await fetch(`http://localhost:8080/api/recipes/${id}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok && response.status !== 404) {
-                throw new Error(`HTTP ${response.status}`);
-            }
+            await deleteRecipe(id);
             navigate('/');
         } catch (err) {
             alert('Fehler beim Löschen: ' + err.message);

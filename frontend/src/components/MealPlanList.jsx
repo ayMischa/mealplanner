@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
+import { getMealPlans, deleteMealPlan } from '../api';
 
 function MealPlanList() {
     const [plans, setPlans] = useState([]);
@@ -8,11 +8,9 @@ function MealPlanList() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function fetchPlans() {
+        async function load() {
             try {
-                const response = await fetch('http://localhost:8080/api/meal-plans');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
+                const data = await getMealPlans();
                 setPlans(data);
             } catch (err) {
                 setError(err.message);
@@ -20,19 +18,14 @@ function MealPlanList() {
                 setLoading(false);
             }
         }
-        fetchPlans();
+        load();
     }, []);
 
     async function handleDelete(id) {
         if (!confirm('Plan wirklich löschen?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/meal-plans/${id}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok && response.status !== 404) {
-                throw new Error(`HTTP ${response.status}`);
-            }
+            await deleteMealPlan(id);
             setPlans(plans.filter(p => p.id !== id));
         } catch (err) {
             alert('Fehler beim Löschen: ' + err.message);
