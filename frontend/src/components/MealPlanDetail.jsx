@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const MEAL_TYPE_ORDER = ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK'];
 const MEAL_TYPE_LABELS = {
@@ -11,7 +11,6 @@ const MEAL_TYPE_LABELS = {
 
 function MealPlanDetail() {
     const { id } = useParams();
-    const navigate = useNavigate();
 
     const [plan, setPlan] = useState(null);
     const [meals, setMeals] = useState([]);

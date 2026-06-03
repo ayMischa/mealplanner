@@ -7,6 +7,7 @@ import de.dhbw.webeng.mealplanner.model.PlannedMeal;
 import de.dhbw.webeng.mealplanner.service.PlannedMealService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -52,11 +54,8 @@ public class PlannedMealController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlannedMealResponse> getById(@PathVariable Long id) {
-        return service.findById(id)
-                .map(PlannedMealMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PlannedMealResponse getById(@PathVariable Long id) {
+        return PlannedMealMapper.toResponse(service.getById(id));
     }
 
     @PostMapping
@@ -71,21 +70,18 @@ public class PlannedMealController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PlannedMealResponse> update(
-            @PathVariable Long id,
-            @Valid @RequestBody PlannedMealRequest request) {
-        PlannedMeal entity = PlannedMealMapper.toEntity(request);
-        return service.update(id, entity, request.mealPlanId(), request.recipeId())
-                .map(PlannedMealMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PlannedMealResponse update(@PathVariable Long id, @Valid @RequestBody PlannedMealRequest request) {
+        PlannedMeal updated = service.update(
+                id,
+                PlannedMealMapper.toEntity(request),
+                request.mealPlanId(),
+                request.recipeId());
+        return PlannedMealMapper.toResponse(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.deleteById(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }

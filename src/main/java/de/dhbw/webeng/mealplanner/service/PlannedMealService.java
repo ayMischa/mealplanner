@@ -6,13 +6,11 @@ import de.dhbw.webeng.mealplanner.model.Recipe;
 import de.dhbw.webeng.mealplanner.repository.MealPlanRepository;
 import de.dhbw.webeng.mealplanner.repository.PlannedMealRepository;
 import de.dhbw.webeng.mealplanner.repository.RecipeRepository;
-import org.springframework.http.HttpStatus;
+import de.dhbw.webeng.mealplanner.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PlannedMealService {
@@ -34,8 +32,9 @@ public class PlannedMealService {
         return repository.findAll();
     }
 
-    public Optional<PlannedMeal> findById(Long id) {
-        return repository.findById(id);
+    public PlannedMeal getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("PlannedMeal", id));
     }
 
     public List<PlannedMeal> findByMealPlanId(Long mealPlanId) {
@@ -55,37 +54,31 @@ public class PlannedMealService {
         return repository.save(meal);
     }
 
-    public Optional<PlannedMeal> update(Long id, PlannedMeal updated, Long mealPlanId, Long recipeId) {
-        return repository.findById(id).map(existing -> {
-            MealPlan plan = loadMealPlan(mealPlanId);
-            Recipe recipe = loadRecipe(recipeId);
-            existing.setDate(updated.getDate());
-            existing.setMealType(updated.getMealType());
-            existing.setMealPlan(plan);
-            existing.setRecipe(recipe);
-            return repository.save(existing);
-        });
+    public PlannedMeal update(Long id, PlannedMeal updated, Long mealPlanId, Long recipeId) {
+        PlannedMeal existing = getById(id);
+        MealPlan plan = loadMealPlan(mealPlanId);
+        Recipe recipe = loadRecipe(recipeId);
+        existing.setDate(updated.getDate());
+        existing.setMealType(updated.getMealType());
+        existing.setMealPlan(plan);
+        existing.setRecipe(recipe);
+        return repository.save(existing);
     }
 
-    public boolean deleteById(Long id) {
+    public void delete(Long id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new ResourceNotFoundException("PlannedMeal", id);
         }
         repository.deleteById(id);
-        return true;
     }
 
-    private MealPlan loadMealPlan(Long id) {
-        return mealPlanRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "MealPlan with id " + id + " does not exist"));
+    private MealPlan loadMealPlan(Long mealPlanId) {
+        return mealPlanRepository.findById(mealPlanId)
+                .orElseThrow(() -> new ResourceNotFoundException("MealPlan", mealPlanId));
     }
 
-    private Recipe loadRecipe(Long id) {
-        return recipeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Recipe with id " + id + " does not exist"));
+    private Recipe loadRecipe(Long recipeId) {
+        return recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe", recipeId));
     }
 }
