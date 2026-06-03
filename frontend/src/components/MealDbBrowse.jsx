@@ -52,7 +52,7 @@ function MealDbBrowse() {
             );
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             setImportStatus(prev => ({ ...prev, [mealDbId]: 'success' }));
-        } catch (err) {
+        } catch {
             setImportStatus(prev => ({ ...prev, [mealDbId]: 'error' }));
         }
     }

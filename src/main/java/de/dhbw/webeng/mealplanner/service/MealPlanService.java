@@ -3,6 +3,7 @@ package de.dhbw.webeng.mealplanner.service;
 import de.dhbw.webeng.mealplanner.model.MealPlan;
 import de.dhbw.webeng.mealplanner.model.MealPlanGoal;
 import de.dhbw.webeng.mealplanner.repository.MealPlanRepository;
+import de.dhbw.webeng.mealplanner.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +26,9 @@ public class MealPlanService {
         return repository.findByGoal(goal);
     }
 
-    public Optional<MealPlan> findById(Long id) {
-        return repository.findById(id);
+    public MealPlan getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("MealPlan", id));
     }
 
     public MealPlan create(MealPlan plan) {
@@ -34,22 +36,20 @@ public class MealPlanService {
         return repository.save(plan);
     }
 
-    public Optional<MealPlan> update(Long id, MealPlan updated) {
-        return repository.findById(id).map(existing -> {
-            existing.setName(updated.getName());
-            existing.setDescription(updated.getDescription());
-            existing.setGoal(updated.getGoal());
-            existing.setStartDate(updated.getStartDate());
-            existing.setEndDate(updated.getEndDate());
-            return repository.save(existing);
-        });
+    public MealPlan update(Long id, MealPlan updated) {
+        MealPlan existing = getById(id);
+        existing.setName(updated.getName());
+        existing.setDescription(updated.getDescription());
+        existing.setGoal(updated.getGoal());
+        existing.setStartDate(updated.getStartDate());
+        existing.setEndDate(updated.getEndDate());
+        return repository.save(existing);
     }
 
-    public boolean deleteById(Long id) {
+    public void delete(Long id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new ResourceNotFoundException("MealPlan", id);
         }
         repository.deleteById(id);
-        return true;
     }
 }

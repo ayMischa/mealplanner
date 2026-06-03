@@ -279,3 +279,6 @@ Content-Type: application/json
   "title": "",
   "caloriesPerServing": -5
 }
+
+### MealPlan 404 (ProblemDetail)
+   GET http://localhost:8080/api/meal-plans/99999

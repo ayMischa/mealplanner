@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.net.URI;
 import java.util.List;
@@ -43,11 +45,8 @@ public class MealPlanController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MealPlanResponse> getById(@PathVariable Long id) {
-        return service.findById(id)
-                .map(MealPlanMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public MealPlanResponse getById(@PathVariable Long id) {
+        return MealPlanMapper.toResponse(service.getById(id));
     }
 
     @PostMapping
@@ -61,20 +60,14 @@ public class MealPlanController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MealPlanResponse> update(
-            @PathVariable Long id,
-            @Valid @RequestBody MealPlanRequest request) {
-        return service.update(id, MealPlanMapper.toEntity(request))
-                .map(MealPlanMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build()); 
+    public MealPlanResponse update(@PathVariable Long id, @Valid @RequestBody MealPlanRequest request) {
+        MealPlan updated = service.update(id, MealPlanMapper.toEntity(request));
+        return MealPlanMapper.toResponse(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.deleteById(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }
