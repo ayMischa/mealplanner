@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { getMealPlan, getPlannedMeals, getRecipes, createPlannedMeal, deletePlannedMeal } from '../api';
 
 const MEAL_TYPE_ORDER = ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK'];
 const MEAL_TYPE_LABELS = {
@@ -29,20 +30,16 @@ function MealPlanDetail() {
     useEffect(() => {
         async function loadAll() {
             try {
-                const [planRes, mealsRes, recipesRes] = await Promise.all([
-                    fetch(`http://localhost:8080/api/meal-plans/${id}`),
-                    fetch(`http://localhost:8080/api/planned-meals?mealPlanId=${id}`),
-                    fetch('http://localhost:8080/api/recipes')
+                const [planData, mealsData, recipesData] = await Promise.all([
+                    getMealPlan(id),
+                    getPlannedMeals(id),
+                    getRecipes()
                 ]);
-                if (planRes.status === 404) throw new Error('Plan nicht gefunden');
-                if (!planRes.ok || !mealsRes.ok || !recipesRes.ok) {
-                    throw new Error('Fehler beim Laden');
-                }
-                setPlan(await planRes.json());
-                setMeals(await mealsRes.json());
-                setRecipes(await recipesRes.json());
+                setPlan(planData);
+                setMeals(mealsData);
+                setRecipes(recipesData);
             } catch (err) {
-                setError(err.message);
+                setError(err.message.includes('404') ? 'Plan nicht gefunden' : err.message);
             } finally {
                 setLoading(false);
             }
@@ -58,18 +55,12 @@ function MealPlanDetail() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const response = await fetch('http://localhost:8080/api/planned-meals', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    date: form.date,
-                    mealType: form.mealType,
-                    mealPlanId: parseInt(id),
-                    recipeId: parseInt(form.recipeId)
-                })
+            const created = await createPlannedMeal({
+                date: form.date,
+                mealType: form.mealType,
+                mealPlanId: parseInt(id),
+                recipeId: parseInt(form.recipeId)
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const created = await response.json();
             setMeals([...meals, created]);
             setForm({ date: '', mealType: 'LUNCH', recipeId: '' });
         } catch (err) {
@@ -82,10 +73,7 @@ function MealPlanDetail() {
     async function handleDeleteMeal(mealId) {
         if (!confirm('Mahlzeit löschen?')) return;
         try {
-            const response = await fetch(`http://localhost:8080/api/planned-meals/${mealId}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok && response.status !== 404) throw new Error(`HTTP ${response.status}`);
+            await deletePlannedMeal(mealId);
             setMeals(meals.filter(m => m.id !== mealId));
         } catch (err) {
             alert('Fehler beim Löschen: ' + err.message);

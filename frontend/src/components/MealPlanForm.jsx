@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { createMealPlan } from '../api';
 
 function MealPlanForm() {
     const navigate = useNavigate();
@@ -31,22 +32,10 @@ function MealPlanForm() {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/meal-plans', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                if (response.status === 400) {
-                    throw new Error('Bitte alle Pflichtfelder ausfüllen');
-                }
-                throw new Error(`HTTP ${response.status}`);
-            }
-
+            await createMealPlan(payload);
             navigate('/meal-plans');
         } catch (err) {
-            setError(err.message);
+            setError(err.message.includes('400') ? 'Bitte alle Pflichtfelder ausfüllen' : err.message);
         } finally {
             setSubmitting(false);
         }

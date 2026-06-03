@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { searchMealDb, getRandomMeal, importRecipeFromMealDb } from '../api';
 
 function MealDbBrowse() {
     const [query, setQuery] = useState('');
@@ -14,11 +15,7 @@ function MealDbBrowse() {
         setError(null);
         setResults([]);
         try {
-            const response = await fetch(
-                `http://localhost:8080/api/mealdb?q=${encodeURIComponent(query)}`
-            );
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
+            const data = await searchMealDb(query);
             setResults(data);
         } catch (err) {
             setError(err.message);
@@ -32,9 +29,7 @@ function MealDbBrowse() {
         setError(null);
         setResults([]);
         try {
-            const response = await fetch('http://localhost:8080/api/mealdb/random');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
+            const data = await getRandomMeal();
             setResults([data]);
         } catch (err) {
             setError(err.message);
@@ -46,13 +41,9 @@ function MealDbBrowse() {
     async function handleImport(mealDbId) {
         setImportStatus({ ...importStatus, [mealDbId]: 'pending' });
         try {
-            const response = await fetch(
-                `http://localhost:8080/api/recipes/from-mealdb/${mealDbId}`,
-                { method: 'POST' }
-            );
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            await importRecipeFromMealDb(mealDbId);
             setImportStatus(prev => ({ ...prev, [mealDbId]: 'success' }));
-        } catch {
+        } catch (err) {
             setImportStatus(prev => ({ ...prev, [mealDbId]: 'error' }));
         }
     }

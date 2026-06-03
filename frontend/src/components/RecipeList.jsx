@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getRecipes, deleteRecipe } from '../api';
 
 function RecipeList() {
     const [recipes, setRecipes] = useState([]);
@@ -7,13 +8,9 @@ function RecipeList() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function fetchRecipes() {
+        async function load() {
             try {
-                const response = await fetch('http://localhost:8080/api/recipes');
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                const data = await response.json();
+                const data = await getRecipes();
                 setRecipes(data);
             } catch (err) {
                 setError(err.message);
@@ -21,19 +18,13 @@ function RecipeList() {
                 setLoading(false);
             }
         }
-        fetchRecipes();
+        load();
     }, []);
 
     async function handleDelete(id) {
         if (!confirm('Rezept wirklich löschen?')) return;
-
         try {
-            const response = await fetch(`http://localhost:8080/api/recipes/${id}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok && response.status !== 404) {
-                throw new Error(`HTTP ${response.status}`);
-            }
+            await deleteRecipe(id);
             setRecipes(recipes.filter(r => r.id !== id));
         } catch (err) {
             alert('Fehler beim Löschen: ' + err.message);
