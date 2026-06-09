@@ -96,6 +96,15 @@ Das Frontend läuft auf http://localhost:5173.
 
 ## API-Übersicht
 
+### Interaktive API-Dokumentation (Swagger)
+
+Bei laufendem Backend ist die vollständige, interaktive API-Dokumentation verfügbar unter:
+
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- OpenAPI-Spezifikation (JSON): http://localhost:8080/v3/api-docs
+
+Die Dokumentation wird automatisch aus den Controllern, DTOs und Validierungsregeln generiert.
+
 ### Recipes – `/api/recipes`
 
 | Methode | Pfad | Zweck |
