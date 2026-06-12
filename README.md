@@ -96,6 +96,7 @@ Das Frontend läuft auf http://localhost:5173.
 
 ## Starten mit Docker
 
+Im Docker-Setup läuft die Anwendung gegen eine PostgreSQL-Datenbank (eigener Container), aktiviert über das Spring-Profil `postgres`. Lokal ohne Docker wird H2 verwendet.
 Die gesamte Anwendung (Backend + Frontend) lässt sich mit einem Befehl starten – Docker und Docker Compose vorausgesetzt:
 
 ```bash
