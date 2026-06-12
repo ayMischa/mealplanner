@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:8080/api';
+const BASE = '/api';
 
 // Für Responses mit JSON-Body (GET, POST, PUT)
 async function handleJson(response) {

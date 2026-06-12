@@ -94,6 +94,20 @@ npm run dev
 
 Das Frontend läuft auf http://localhost:5173.
 
+## Starten mit Docker
+
+Die gesamte Anwendung (Backend + Frontend) lässt sich mit einem Befehl starten – Docker und Docker Compose vorausgesetzt:
+
+```bash
+docker compose up --build
+```
+
+Anschließend erreichbar:
+- Frontend: http://localhost:3000
+- Backend API / Swagger: http://localhost:8080/swagger-ui.html
+
+Stoppen mit `Strg+C`, vollständiges Aufräumen mit `docker compose down`.
+
 ## API-Übersicht
 
 ### Interaktive API-Dokumentation (Swagger)
