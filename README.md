@@ -199,7 +199,7 @@ Beispielrequests inklusive verketteter Tests in [`src/test/resources/api-tests.h
 ./mvnw test
 ```
 
-Über 19 Tests in drei Kategorien:
+20 Tests in drei Kategorien:
 
 - **Unit-Tests** (`mapper/`, `service/`): testen einzelne Klassen isoliert mit Mockito
 - **Repository-Integration-Tests** (`repository/`): testen JPA-Repositories gegen In-Memory-H2 via `@DataJpaTest`
