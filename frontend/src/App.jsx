@@ -32,12 +32,10 @@ function App() {
                 <Routes>
                     <Route path="/" element={<RecipeList />} />
                     <Route path="/recipes/new" element={<RecipeForm />} />
-                    <Route path="/meal-plans" element={<MealPlanList />} />
-                    <Route path="/meal-plans/new" element={<MealPlanForm />} />
-                    <Route path="/meal-plans/:id" element={<MealPlanDetail />} />
                     <Route path="/recipes/:id" element={<RecipeDetail />} />
                     <Route path="/meal-plans" element={<MealPlanList />} />
                     <Route path="/meal-plans/new" element={<MealPlanForm />} />
+                    <Route path="/meal-plans/:id" element={<MealPlanDetail />} />
                     <Route path="/mealdb" element={<MealDbBrowse />} />
                 </Routes>
             </div>
