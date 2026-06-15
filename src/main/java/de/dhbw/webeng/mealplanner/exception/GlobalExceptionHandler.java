@@ -40,4 +40,12 @@ public class GlobalExceptionHandler {
         problem.setTitle("Upstream service unavailable");
         return problem;
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ProblemDetail handleBadRequest(BadRequestException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setTitle("Bad request");
+        return problem;
+    }
 }
