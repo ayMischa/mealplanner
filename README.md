@@ -127,7 +127,7 @@ Das Frontend läuft auf http://localhost:5173. Der Vite-Dev-Proxy leitet `/api`-
 
 ## Starten mit Docker
 
-Die gesamte Anwendung (Backend + Frontend + PostgreSQL) lässt sich mit einem Befehl starten – Docker und Docker Compose vorausgesetzt:
+Die gesamte Anwendung (Backend + Frontend + PostgreSQL) lässt sich mit einem Befehl starten -> Docker und Docker Compose vorausgesetzt:
 
 ```bash
 docker compose up --build
