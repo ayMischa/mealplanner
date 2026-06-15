@@ -4,10 +4,10 @@ import de.dhbw.webeng.mealplanner.model.MealPlan;
 import de.dhbw.webeng.mealplanner.model.MealPlanGoal;
 import de.dhbw.webeng.mealplanner.repository.MealPlanRepository;
 import de.dhbw.webeng.mealplanner.exception.ResourceNotFoundException;
+import de.dhbw.webeng.mealplanner.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MealPlanService {
@@ -33,6 +33,7 @@ public class MealPlanService {
 
     public MealPlan create(MealPlan plan) {
         plan.setId(null);
+        validateDateRange(plan);
         return repository.save(plan);
     }
 
@@ -43,6 +44,7 @@ public class MealPlanService {
         existing.setGoal(updated.getGoal());
         existing.setStartDate(updated.getStartDate());
         existing.setEndDate(updated.getEndDate());
+        validateDateRange(existing);
         return repository.save(existing);
     }
 
@@ -51,5 +53,11 @@ public class MealPlanService {
             throw new ResourceNotFoundException("MealPlan", id);
         }
         repository.deleteById(id);
+    }
+
+    private void validateDateRange(MealPlan plan) {
+        if (plan.getEndDate().isBefore(plan.getStartDate())) {
+            throw new BadRequestException("Enddatum darf nicht vor dem Startdatum liegen");
+        }
     }
 }
