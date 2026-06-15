@@ -15,7 +15,7 @@ Eine Webanwendung zur Planung von Mahlzeiten und zur Verwaltung von Rezepten, mi
 - **Rezeptverwaltung**: Rezepte mit Titel, Kategorie, Herkunft, Zubereitungsanleitung und optionalen Nährwerten (Kalorien, Protein, Carbs, Fett) anlegen, ansehen, bearbeiten, löschen
 - **Mahlzeitenpläne**: Ernährungspläne mit Ziel (Cut/Bulk/Maintain), Zeitraum und Beschreibung
 - **Geplante Mahlzeiten**: Konkrete Rezepte an konkreten Tagen in einen Plan einfügen, gruppiert nach Datum, mit Frühstück/Mittag/Abend/Snack
-- **TheMealDB-Integration**: Externe Rezeptdatenbank durchsuchen, Zufallsrezepte ziehen und direkt in die eigene Sammlung importieren (idempotent)
+- **TheMealDB-Integration**: Externe Rezeptdatenbank durchsuchen, Zufallsrezepte ziehen und direkt in die eigene Sammlung importieren (idempotent: Wenn das selbe MealDB-Rezept nochmal importiert wird, wird kein Duplikat angelegt)
 - **Eingabevalidierung** mit Bean Validation und **globales Fehler-Handling** im RFC-7807-Format (ProblemDetail) über `@RestControllerAdvice` – konsistente, maschinenlesbare Fehlerantworten mit passenden HTTP-Statuscodes
 - **Drei Testarten**: Unit-Tests (Mockito), Repository-Integration (`@DataJpaTest`), Controller-Integration (`@WebMvcTest` mit MockMvc)
 - **DevOps**: Multi-Stage-Docker-Builds, Docker Compose (Backend + Frontend + PostgreSQL), GitHub-Actions-CI-Pipeline und OpenAPI/Swagger-Dokumentation
