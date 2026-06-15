@@ -43,7 +43,7 @@ function MealDbBrowse() {
         try {
             await importRecipeFromMealDb(mealDbId);
             setImportStatus(prev => ({ ...prev, [mealDbId]: 'success' }));
-        } catch (err) {
+        } catch {
             setImportStatus(prev => ({ ...prev, [mealDbId]: 'error' }));
         }
     }
